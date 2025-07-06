@@ -51,6 +51,25 @@ TitanCoffeeRunRails is a Ruby on Rails web application designed to manage and st
 
 ## Setup Instructions
 
+### Quick Start (Recommended)
+
+Use the automated setup script for the easiest installation:
+
+```bash
+./scripts/runRails.sh
+```
+
+The script will automatically:
+- ✅ Check and install Ruby 3.3.6 (via rbenv if available)
+- ✅ Install bundler and dependencies
+- ✅ Set up all databases (primary, cache, queue, cable)
+- ✅ Run optional tests and code quality checks
+- ✅ Launch the Rails server
+
+### Manual Setup
+
+If you prefer manual setup or need to troubleshoot:
+
 1. **Clone the repository:**
 
    ```bash
@@ -125,6 +144,7 @@ bin/kamal logs     # View logs
 
 ## Key Files
 
+- `scripts/runRails.sh` - Automated setup and launch script
 - `config/deploy.yml` - Kamal deployment configuration
 - `config/importmap.rb` - JavaScript import maps
 - `app/views/pwa/` - Progressive Web App files
