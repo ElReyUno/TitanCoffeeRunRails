@@ -1,0 +1,56 @@
+<div class="orders-page">
+  <h1>My Orders</h1>
+  
+  <% if @orders.any? %>
+    <div class="orders-list">
+      <% @orders.each do |order| %>
+        <div class="order-card">
+          <div class="order-header">
+            <h3><%= order.order_number %></h3>
+            <span class="order-status status-<%= order.status %>">
+              <%= order.status.titleize %>
+            </span>
+          </div>
+          
+          <div class="order-details">
+            <p><strong>Date:</strong> <%= order.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+            <p><strong>Items:</strong> <%= order.items_count %></p>
+            <p><strong>Total:</strong> $<%= order.total_amount %></p>
+            
+            <% if order.donation_amount > 0 %>
+              <p><strong>Titan Fund Donation:</strong> $<%= order.donation_amount %></p>
+            <% end %>
+          </div>
+          
+          <div class="order-items">
+            <% order.order_items.each do |item| %>
+              <div class="order-item">
+                <%= item.quantity %>x <%= item.product.name %> 
+                (<%= item.size %>) - <%= item.formatted_subtotal %>
+                <% if item.notes.present? %>
+                  <br><small><em>Notes: <%= item.notes %></em></small>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+          
+          <div class="order-actions">
+            <%= link_to "View Details", order_path(order), class: "btn btn-outline" %>
+            <% if order.can_be_cancelled? %>
+              <%= link_to "Cancel", order_path(order), method: :patch, 
+                          params: { order: { status: 'cancelled' } },
+                          confirm: "Are you sure you want to cancel this order?",
+                          class: "btn btn-danger" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <h3>No orders yet</h3>
+      <p>Ready to place your first order?</p>
+      <%= link_to "Browse Menu", products_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

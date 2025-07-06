@@ -1,0 +1,48 @@
+<div class="menu-page">
+  <h1>Our Menu</h1>
+  
+  <div class="products-grid">
+    <% @products.each do |product| %>
+      <div class="product-card" data-product-id="<%= product.id %>">
+        <div class="product-image">
+          <%= image_tag "#{product.name.downcase}.jpg", alt: product.name %>
+        </div>
+        
+        <div class="product-info">
+          <h3><%= product.name %></h3>
+          <p class="price"><%= product.formatted_price %></p>
+          
+          <%= form_with url: cart_items_path, method: :post, local: false, class: "add-to-cart-form" do |form| %>
+            <%= form.hidden_field :product_id, value: product.id %>
+            
+            <div class="size-options">
+              <label>Size:</label>
+              <% product.available_sizes_array.each do |size| %>
+                <%= form.radio_button :size, size, id: "#{product.id}_#{size}" %>
+                <%= form.label "size_#{size}", size, for: "#{product.id}_#{size}" %>
+              <% end %>
+            </div>
+            
+            <div class="quantity-input">
+              <%= form.label :quantity %>
+              <%= form.number_field :quantity, value: 1, min: 1, max: 10 %>
+            </div>
+            
+            <div class="notes-input">
+              <%= form.label :notes, "Special Instructions" %>
+              <%= form.text_area :notes, rows: 2 %>
+            </div>
+            
+            <%= form.submit "Add to Cart", class: "btn btn-primary" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="cart-summary">
+    <h3>Cart (<span id="cart-count">0</span> items)</h3>
+    <div id="cart-items"></div>
+    <%= link_to "Checkout", checkout_path, class: "btn btn-success", id: "checkout-btn" %>
+  </div>
+</div>
