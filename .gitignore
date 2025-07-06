@@ -51,3 +51,6 @@
 
 # Ignore CI service files
 /.github/
+
+# Miscellaneous Ignores
+/Titans-Coffee-Run/
