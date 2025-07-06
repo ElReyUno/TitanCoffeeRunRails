@@ -8,10 +8,10 @@ admin = User.find_by(email: admin_email)
 
 if admin.nil?
   admin = User.create!(
-    email: admin_email,
-    password: 'test123',
+    email:                 admin_email,
+    password:              'test123',
     password_confirmation: 'test123',
-    admin: true
+    admin:                 true
   )
   puts "✅ Created admin user: #{admin_email}"
 else
@@ -20,20 +20,20 @@ end
 
 # Create products based on Titans Coffee Run frontend
 products_data = [
-  { name: 'Cappuccino', price: 9.00, available_sizes: ['Small', 'Medium', 'Large'] },
-  { name: 'Macaroons', price: 4.00, available_sizes: ['Small', 'Medium', 'Large'] },
-  { name: 'Donuts', price: 5.00, available_sizes: ['Small', 'Medium', 'Large'] }
+  { name: 'Cappuccino', price: 9.00, available_sizes: [ 'Small', 'Medium', 'Large' ] },
+  { name: 'Macaroons', price: 4.00, available_sizes: [ 'Small', 'Medium', 'Large' ] },
+  { name: 'Donuts', price: 5.00, available_sizes: [ 'Small', 'Medium', 'Large' ] },
 ]
 
 products_data.each do |product_data|
   product = Product.find_by(name: product_data[:name])
-  
+
   if product.nil?
     Product.create!(
-      name: product_data[:name],
-      price: product_data[:price],
+      name:            product_data[:name],
+      price:           product_data[:price],
       available_sizes: product_data[:available_sizes].to_json,
-      active: true
+      active:          true
     )
     puts "✅ Created product: #{product_data[:name]} ($#{product_data[:price]})"
   else
@@ -47,10 +47,10 @@ regular_user = User.find_by(email: regular_email)
 
 if regular_user.nil?
   regular_user = User.create!(
-    email: regular_email,
-    password: 'password123',
+    email:                 regular_email,
+    password:              'password123',
     password_confirmation: 'password123',
-    admin: false
+    admin:                 false
   )
   puts "✅ Created regular user: #{regular_email}"
 else

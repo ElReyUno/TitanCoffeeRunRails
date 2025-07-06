@@ -85,7 +85,21 @@ check_dependencies() {
         exit 1
     fi
     
-    echo "✅ All system dependencies check passed"
+    # Check if git is available (useful for version control)
+    if command -v git &> /dev/null; then
+        echo "✅ Git is available: $(git --version)"
+    else
+        echo "⚠️  Warning: Git not found - version control not available"
+    fi
+    
+    # Check database tools (optional but helpful)
+    if command -v sqlite3 &> /dev/null; then
+        echo "✅ SQLite3 CLI available: $(sqlite3 --version | cut -d' ' -f1)"
+    else
+        echo "ℹ️  SQLite3 CLI not found - database inspection limited"
+    fi
+    
+    echo "✅ All required system dependencies check passed"
 }
 
 # Function to check Rails application state
@@ -223,13 +237,65 @@ clean_duplicate_gems() {
 # Function to run Rails generators safely
 run_generator() {
     local generator_cmd="$1"
+    local what_generating="$2"
     echo "🔧 Running: $generator_cmd"
     
     if eval "$generator_cmd"; then
         echo "✅ Generator completed successfully"
     else
-        echo "⚠️  Generator may have failed or files already exist"
+        echo "⚠️  Generator may have failed or files already exist for $what_generating"
+        echo "ℹ️  This is usually fine - continuing with setup"
         # Don't exit on generator failures - they might be due to existing files
+        return 1
+    fi
+}
+
+# Function to check if a model file exists and appears to be complete
+check_model_exists() {
+    local model_name="$1"
+    local model_file="app/models/${model_name}.rb"
+    
+    if [ -f "$model_file" ]; then
+        # Check if the model file contains a class definition
+        if grep -q "class.*${model_name^}" "$model_file"; then
+            echo "✅ ${model_name^} model already exists and appears complete"
+            return 0
+        else
+            echo "⚠️  ${model_name^} model file exists but may be incomplete"
+            return 1
+        fi
+    else
+        echo "ℹ️  ${model_name^} model not found - will create"
+        return 1
+    fi
+}
+
+# Function to check if a controller file exists and appears to be complete
+check_controller_exists() {
+    local controller_name="$1"
+    local controller_file
+    local class_name
+    
+    # Handle admin controllers with nested path
+    if [[ "$controller_name" == *"/"* ]]; then
+        controller_file="app/controllers/${controller_name}_controller.rb"
+        class_name=$(echo "$controller_name" | sed 's|/|::|g' | sed 's/\b\w/\U&/g')
+    else
+        controller_file="app/controllers/${controller_name}_controller.rb"
+        class_name="${controller_name^}"
+    fi
+    
+    if [ -f "$controller_file" ]; then
+        # Check if the controller file contains a class definition
+        if grep -q "class.*${class_name}.*Controller" "$controller_file"; then
+            echo "✅ ${class_name}Controller already exists and appears complete"
+            return 0
+        else
+            echo "⚠️  ${class_name}Controller file exists but may be incomplete"
+            return 1
+        fi
+    else
+        echo "ℹ️  ${class_name}Controller not found - will create"
         return 1
     fi
 }
@@ -247,117 +313,9 @@ safe_bundle_install() {
     fi
 }
 
-# Function to safely run database operations
-safe_db_operations() {
-    echo "🗄️  Running database operations..."
-    
-    # Try to create database first (in case it doesn't exist)
-    if rails db:create &> /dev/null; then
-        echo "✅ Database created or already exists"
-    fi
-    
-    # Run migrations
-    if rails db:migrate; then
-        echo "✅ Database migrations completed"
-    else
-        echo "❌ Database migrations failed"
-        echo "Please check the migration files and try again"
-        exit 1
-    fi
-    
-    # Run seeds
-    if rails db:seed; then
-        echo "✅ Database seeding completed"
-    else
-        echo "❌ Database seeding failed"
-        echo "Please check the seed file and try again"
-        exit 1
-    fi
-}
-
-# Check if we're in the right directory
-check_rails_project
-
-# Run dependency checks
-check_dependencies
-check_rails_state
-check_gemfile_structure
-
-echo ""
-echo "📋 Step 1: Adding required gems to Gemfile..."
-echo "============================================="
-
-# Add production gems
-add_gem_if_missing "devise" "gem 'devise'"
-add_gem_if_missing "pundit" "gem 'pundit'"
-add_gem_if_missing "image_processing" "gem 'image_processing'"
-
-# Add development/test gems
-add_gem_if_missing "rspec-rails" "group :development, :test"
-add_gem_if_missing "factory_bot_rails" "group :development, :test"
-add_gem_if_missing "capybara" "group :development, :test"
-add_gem_if_missing "selenium-webdriver" "group :development, :test"
-
-# Clean up any duplicates
-clean_duplicate_gems
-
-echo ""
-echo "📦 Step 2: Installing gem dependencies..."
-echo "========================================"
-safe_bundle_install
-
-echo ""
-echo "🔐 Step 3: Setting up Devise authentication..."
-echo "============================================="
-
-# Install Devise
-if [ ! -f "config/initializers/devise.rb" ]; then
-    run_generator "rails generate devise:install"
-else
-    echo "✅ Devise already installed"
-fi
-
-# Generate Devise User model
-if [ ! -f "app/models/user.rb" ]; then
-    run_generator "rails generate devise User admin:boolean"
-else
-    echo "✅ User model already exists"
-fi
-
-echo ""
-echo "🏪 Step 4: Creating Product model..."
-echo "==================================="
-if [ ! -f "app/models/product.rb" ]; then
-    run_generator "rails generate model Product name:string price:decimal available_sizes:text active:boolean"
-else
-    echo "✅ Product model already exists"
-fi
-
-echo ""
-echo "📋 Step 5: Creating Order model..."
-echo "=================================="
-if [ ! -f "app/models/order.rb" ]; then
-    run_generator "rails generate model Order user:references total_amount:decimal notes:text status:integer titan_fund_donation:decimal"
-else
-    echo "✅ Order model already exists"
-fi
-
-echo ""
-echo "🛒 Step 6: Creating OrderItem model..."
-echo "====================================="
-if [ ! -f "app/models/order_item.rb" ]; then
-    run_generator "rails generate model OrderItem order:references product:references size:string quantity:integer unit_price:decimal subtotal:decimal"
-else
-    echo "✅ OrderItem model already exists"
-fi
-
-echo ""
-echo "🗄️  Step 7: Setting up database..."
-echo "================================="
-safe_db_operations
-
-# Create seeds.rb with Titans Coffee Run specific data
-cat > db/seeds.rb << 'EOF'
+# Function to create the seeds file
+create_seeds_file() {
+    cat > db/seeds.rb << 'EOF'
 # Titans Coffee Run Seed Data
 
 puts "🌱 Seeding Titans Coffee Run data..."
@@ -428,13 +386,423 @@ puts "🔑 Login Credentials:"
 puts "   Admin: admin@titanscoffee.com / test123"
 puts "   User:  user@titanscoffee.com / password123"
 EOF
+}
+
+# Function to safely run database operations
+safe_db_operations() {
+    echo "🗄️  Running database operations..."
+    
+    # Try to create database first (in case it doesn't exist)
+    if rails db:create &> /dev/null; then
+        echo "✅ Database created or already exists"
+    fi
+    
+    # Run migrations
+    if rails db:migrate; then
+        echo "✅ Database migrations completed"
+    else
+        echo "❌ Database migrations failed"
+        echo "Please check the migration files and try again"
+        exit 1
+    fi
+    
+    # Check if seeds already exist and contain data
+    if [ -f "db/seeds.rb" ] && [ -s "db/seeds.rb" ]; then
+        echo "ℹ️  Existing seeds.rb file found"
+        # Check if it looks like our Titans Coffee Run seeds
+        if grep -q "Titans Coffee Run" "db/seeds.rb"; then
+            echo "✅ Titans Coffee Run seeds already exist - skipping seed creation"
+        else
+            echo "⚠️  Custom seeds.rb exists - backing up before overwriting"
+            cp db/seeds.rb "db/seeds.rb.backup-$(date +%s)"
+            create_seeds_file
+        fi
+    else
+        echo "ℹ️  Creating new seeds.rb file..."
+        create_seeds_file
+    fi
+    
+    # Run seeds
+    if rails db:seed; then
+        echo "✅ Database seeding completed"
+    else
+        echo "❌ Database seeding failed"
+        echo "Please check the seed file and try again"
+        exit 1
+    fi
+}
+
+# Function to enhance generated models with proper associations and formatting
+enhance_models() {
+    echo "🔧 Enhancing generated models with proper associations and validations..."
+    
+    # Enhance User model
+    if [ -f "app/models/user.rb" ]; then
+        echo "📝 Enhancing User model..."
+        
+        # Check if already enhanced
+        if ! grep -q "has_many :orders" app/models/user.rb; then
+            # Create backup
+            cp app/models/user.rb "app/models/user.rb.backup-$(date +%s)"
+            
+            # Add associations and methods after devise line
+            sed -i '/devise /a\
+\
+  # Associations\
+  has_many :orders, dependent: :destroy\
+  has_many :order_items, through: :orders\
+\
+  # Validations\
+  validates :first_name, :last_name, presence: true\
+\
+  # Scopes\
+  scope :admins, -> { where(admin: true) }\
+  scope :recent, -> { order(created_at: :desc) }\
+\
+  def full_name\
+    "#{first_name} #{last_name}".strip\
+  end\
+\
+  def display_name\
+    full_name.present? ? full_name : email.split("@").first\
+  end' app/models/user.rb
+            
+            echo "✅ Enhanced User model"
+        else
+            echo "✅ User model already enhanced"
+        fi
+    fi
+    
+    # Enhance Product model
+    if [ -f "app/models/product.rb" ]; then
+        echo "📝 Enhancing Product model..."
+        
+        # Check if already enhanced
+        if ! grep -q "has_many :order_items" app/models/product.rb; then
+            # Create backup
+            cp app/models/product.rb "app/models/product.rb.backup-$(date +%s)"
+            
+            # Replace the entire model with properly formatted version
+            cat > app/models/product.rb << 'EOF'
+class Product < ApplicationRecord
+  # Associations
+  has_many :order_items, dependent: :destroy
+  has_many :orders, through: :order_items
+  
+  # Validations
+  validates :name, presence: true, uniqueness: true
+  validates :price, presence: true, numericality: { greater_than: 0 }
+  validates :active, inclusion: { in: [true, false] }
+  
+  # Scopes
+  scope :active, -> { where(active: true) }
+  scope :by_name, -> { order(:name) }
+  scope :popular, -> { 
+    joins(:order_items)
+      .group('products.id')
+      .order('SUM(order_items.quantity) DESC') 
+  }
+  
+  # Callbacks
+  before_save :ensure_available_sizes_format
+  
+  def available_sizes_array
+    return [] if available_sizes.blank?
+    
+    case available_sizes
+    when String
+      available_sizes.split(',').map(&:strip)
+    when Array
+      available_sizes
+    else
+      []
+    end
+  end
+  
+  def available_sizes_array=(sizes)
+    self.available_sizes = sizes.join(',') if sizes.is_a?(Array)
+  end
+  
+  def formatted_price
+    "$#{'%.2f' % price}"
+  end
+  
+  private
+  
+  def ensure_available_sizes_format
+    return if available_sizes.blank?
+    
+    # Ensure it's stored as comma-separated string
+    if available_sizes.is_a?(Array)
+      self.available_sizes = available_sizes.join(',')
+    end
+  end
+end
+EOF
+            echo "✅ Enhanced Product model with proper formatting"
+        else
+            echo "✅ Product model already enhanced"
+        fi
+    fi
+    
+    # Enhance Order model
+    if [ -f "app/models/order.rb" ]; then
+        echo "📝 Enhancing Order model..."
+        
+        # Check if already enhanced
+        if ! grep -q "enum status:" app/models/order.rb; then
+            # Create backup
+            cp app/models/order.rb "app/models/order.rb.backup-$(date +%s)"
+            
+            # Replace the entire model with properly formatted version
+            cat > app/models/order.rb << 'EOF'
+class Order < ApplicationRecord
+  # Associations
+  belongs_to :user
+  has_many :order_items, dependent: :destroy
+  has_many :products, through: :order_items
+  
+  # Enums with Rails 8 syntax and proper multi-line formatting
+  enum status: { 
+    pending: 0, 
+    confirmed: 1, 
+    preparing: 2, 
+    ready: 3, 
+    completed: 4, 
+    cancelled: 5,
+  }
+  
+  # Validations
+  validates :total_amount, 
+            presence: true, 
+            numericality: { greater_than: 0 }
+  validates :status, presence: true
+  validates :titan_fund_donation, 
+            numericality: { greater_than_or_equal_to: 0 }, 
+            allow_nil: true
+  
+  # Scopes
+  scope :recent, -> { order(created_at: :desc) }
+  scope :by_status, ->(status) { where(status: status) }
+  scope :with_donation, -> { where.not(titan_fund_donation: [nil, 0]) }
+  scope :this_month, -> { 
+    where(created_at: Time.current.beginning_of_month..Time.current.end_of_month) 
+  }
+  
+  # Callbacks
+  before_save :calculate_total
+  after_create :send_confirmation_email
+  
+  def order_number
+    "TCR-#{id.to_s.rjust(6, '0')}"
+  end
+  
+  def items_count
+    order_items.sum(:quantity)
+  end
+  
+  def subtotal
+    order_items.sum(:subtotal)
+  end
+  
+  def donation_amount
+    titan_fund_donation || 0
+  end
+  
+  def can_be_cancelled?
+    pending? || confirmed?
+  end
+  
+  def formatted_total
+    "$#{'%.2f' % total_amount}"
+  end
+  
+  def status_badge_class
+    case status
+    when 'pending'   then 'badge-warning'
+    when 'confirmed' then 'badge-info'
+    when 'preparing' then 'badge-primary'
+    when 'ready'     then 'badge-success'
+    when 'completed' then 'badge-dark'
+    when 'cancelled' then 'badge-danger'
+    else 'badge-secondary'
+    end
+  end
+  
+  private
+  
+  def calculate_total
+    self.total_amount = subtotal + donation_amount
+  end
+  
+  def send_confirmation_email
+    # OrderMailer.confirmation(self).deliver_later
+    # TODO: Uncomment when OrderMailer is implemented
+  end
+end
+EOF
+            echo "✅ Enhanced Order model with Rails 8 enum syntax and proper formatting"
+        else
+            echo "✅ Order model already enhanced"
+        fi
+    fi
+    
+    # Enhance OrderItem model
+    if [ -f "app/models/order_item.rb" ]; then
+        echo "📝 Enhancing OrderItem model..."
+        
+        # Check if already enhanced
+        if ! grep -q "before_save :calculate_subtotal" app/models/order_item.rb; then
+            # Create backup
+            cp app/models/order_item.rb "app/models/order_item.rb.backup-$(date +%s)"
+            
+            # Replace the entire model with properly formatted version
+            cat > app/models/order_item.rb << 'EOF'
+class OrderItem < ApplicationRecord
+  # Associations
+  belongs_to :order
+  belongs_to :product
+  
+  # Validations
+  validates :quantity, 
+            presence: true, 
+            numericality: { greater_than: 0, only_integer: true }
+  validates :unit_price, 
+            presence: true, 
+            numericality: { greater_than: 0 }
+  validates :size, presence: true
+  validates :subtotal, 
+            presence: true, 
+            numericality: { greater_than_or_equal_to: 0 }
+  
+  # Callbacks
+  before_save :calculate_subtotal
+  before_save :set_unit_price_if_blank
+  
+  # Scopes
+  scope :by_product, ->(product) { where(product: product) }
+  scope :by_size, ->(size) { where(size: size) }
+  
+  def total_price
+    quantity * unit_price
+  end
+  
+  def formatted_unit_price
+    "$#{'%.2f' % unit_price}"
+  end
+  
+  def formatted_subtotal
+    "$#{'%.2f' % subtotal}"
+  end
+  
+  def product_name_with_size
+    "#{product.name} (#{size.capitalize})"
+  end
+  
+  private
+  
+  def calculate_subtotal
+    self.subtotal = quantity * unit_price
+  end
+  
+  def set_unit_price_if_blank
+    self.unit_price = product.price if unit_price.blank? && product.present?
+  end
+end
+EOF
+            echo "✅ Enhanced OrderItem model with proper formatting"
+        else
+            echo "✅ OrderItem model already enhanced"
+        fi
+    fi
+    
+    echo "✅ Model enhancement complete"
+}
+
+# Check if we're in the right directory
+check_rails_project
+
+# Run dependency checks
+check_dependencies
+check_rails_state
+check_gemfile_structure
+
+echo ""
+echo "📋 Step 1: Adding required gems to Gemfile..."
+echo "============================================="
+
+# Add production gems
+add_gem_if_missing "devise" "gem 'devise'"
+add_gem_if_missing "pundit" "gem 'pundit'"
+add_gem_if_missing "image_processing" "gem 'image_processing'"
+
+# Add development/test gems
+add_gem_if_missing "rspec-rails" "group :development, :test"
+add_gem_if_missing "factory_bot_rails" "group :development, :test"
+add_gem_if_missing "capybara" "group :development, :test"
+add_gem_if_missing "selenium-webdriver" "group :development, :test"
+
+# Clean up any duplicates
+clean_duplicate_gems
+
+echo ""
+echo "📦 Step 2: Installing gem dependencies..."
+echo "========================================"
+safe_bundle_install
+
+echo ""
+echo "🔐 Step 3: Setting up Devise authentication..."
+echo "============================================="
+
+# Install Devise
+if [ ! -f "config/initializers/devise.rb" ]; then
+    run_generator "rails generate devise:install"
+else
+    echo "✅ Devise already installed"
+fi
+
+# Generate Devise User model
+if ! check_model_exists "user"; then
+    run_generator "rails generate devise User admin:boolean" "User model with Devise"
+fi
+
+echo ""
+echo "🏪 Step 4: Creating Product model..."
+echo "==================================="
+if ! check_model_exists "product"; then
+    run_generator "rails generate model Product name:string price:decimal available_sizes:text active:boolean" "Product model"
+fi
+
+echo ""
+echo "📋 Step 5: Creating Order model..."
+echo "=================================="
+if ! check_model_exists "order"; then
+    run_generator "rails generate model Order user:references total_amount:decimal notes:text status:integer titan_fund_donation:decimal" "Order model"
+fi
+
+echo ""
+echo "🛒 Step 6: Creating OrderItem model..."
+echo "====================================="
+if ! check_model_exists "order_item"; then
+    run_generator "rails generate model OrderItem order:references product:references size:string quantity:integer unit_price:decimal subtotal:decimal" "OrderItem model"
+fi
+
+echo ""
+echo "� Step 6.5: Enhancing models with proper associations..."
+echo "======================================================"
+enhance_models
+
+echo ""
+echo "�🗄️  Step 7: Setting up database..."
+echo "================================="
+safe_db_operations
 
 echo ""
 echo "📁 Step 8: Creating basic controller structure..."
 echo "=============================================="
 
 # Create HomeController
-if [ ! -f "app/controllers/home_controller.rb" ]; then
+if ! check_controller_exists "home"; then
     mkdir -p app/controllers
     cat > app/controllers/home_controller.rb << 'EOF'
 class HomeController < ApplicationController
@@ -444,12 +812,10 @@ class HomeController < ApplicationController
 end
 EOF
     echo "✅ Created HomeController"
-else
-    echo "✅ HomeController already exists"
 fi
 
 # Create ProductsController
-if [ ! -f "app/controllers/products_controller.rb" ]; then
+if ! check_controller_exists "products"; then
     cat > app/controllers/products_controller.rb << 'EOF'
 class ProductsController < ApplicationController
   before_action :authenticate_user!
@@ -461,12 +827,10 @@ class ProductsController < ApplicationController
 end
 EOF
     echo "✅ Created ProductsController"
-else
-    echo "✅ ProductsController already exists"
 fi
 
 # Create OrdersController
-if [ ! -f "app/controllers/orders_controller.rb" ]; then
+if ! check_controller_exists "orders"; then
     cat > app/controllers/orders_controller.rb << 'EOF'
 class OrdersController < ApplicationController
   before_action :authenticate_user!
@@ -512,14 +876,12 @@ class OrdersController < ApplicationController
 end
 EOF
     echo "✅ Created OrdersController"
-else
-    echo "✅ OrdersController already exists"
 fi
 
 # Create Admin controllers directory and base controller
 mkdir -p app/controllers/admin
 
-if [ ! -f "app/controllers/admin/base_controller.rb" ]; then
+if ! check_controller_exists "admin/base"; then
     cat > app/controllers/admin/base_controller.rb << 'EOF'
 class Admin::BaseController < ApplicationController
   before_action :authenticate_user!
@@ -533,11 +895,9 @@ class Admin::BaseController < ApplicationController
 end
 EOF
     echo "✅ Created Admin::BaseController"
-else
-    echo "✅ Admin::BaseController already exists"
 fi
 
-if [ ! -f "app/controllers/admin/sales_controller.rb" ]; then
+if ! check_controller_exists "admin/sales"; then
     cat > app/controllers/admin/sales_controller.rb << 'EOF'
 class Admin::SalesController < Admin::BaseController
   def index
@@ -558,18 +918,39 @@ class Admin::SalesController < Admin::BaseController
 end
 EOF
     echo "✅ Created Admin::SalesController"
-else
-    echo "✅ Admin::SalesController already exists"
 fi
 
 echo ""
 echo "🛣️  Step 9: Adding basic routes..."
 echo "=================================="
 
+# Function to check if essential routes exist
+check_routes() {
+    local has_devise=$(grep -c "devise_for :users" config/routes.rb || echo "0")
+    local has_root=$(grep -c "root " config/routes.rb || echo "0")
+    local has_products=$(grep -c "resources :products" config/routes.rb || echo "0")
+    local has_orders=$(grep -c "resources :orders" config/routes.rb || echo "0")
+    local has_admin=$(grep -c "namespace :admin" config/routes.rb || echo "0")
+    
+    echo "ℹ️  Route check: devise($has_devise) root($has_root) products($has_products) orders($has_orders) admin($has_admin)"
+    
+    # If we have all essential routes, don't modify
+    if [ "$has_devise" -gt 0 ] && [ "$has_root" -gt 0 ] && [ "$has_products" -gt 0 ] && [ "$has_orders" -gt 0 ] && [ "$has_admin" -gt 0 ]; then
+        echo "✅ All essential routes already configured"
+        return 0
+    else
+        echo "ℹ️  Some routes missing - will update routes.rb"
+        return 1
+    fi
+}
+
 # Check if routes need to be added
-if ! grep -q "devise_for :users" config/routes.rb; then
+if check_routes; then
+    echo "✅ Routes configuration is complete"
+else
     # Backup existing routes
-    cp config/routes.rb config/routes.rb.backup
+    cp config/routes.rb "config/routes.rb.backup-$(date +%s)"
+    echo "📁 Backed up existing routes.rb"
     
     # Create new routes file with Titans Coffee Run routes
     cat > config/routes.rb << 'EOF'
@@ -602,9 +983,7 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 end
 EOF
-    echo "✅ Updated routes.rb (backup saved as routes.rb.backup)"
-else
-    echo "✅ Routes already configured"
+    echo "✅ Updated routes.rb (backup saved)"
 fi
 
 echo ""

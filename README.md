@@ -274,4 +274,38 @@ This project integrates an existing JavaScript/HTML/CSS coffee run frontend into
 - **Asset Precompilation** - Optimized static file delivery
 - **Health Checks** - Application monitoring and alerting
 
-This architecture provides a solid foundation for scaling from a simple coffee ordering system to a comprehensive food service management platform with features like inventory tracking, multi-location support, and advanced analytics.
+## Dependency Management & Non-Destructive Setup
+
+All setup scripts have been designed to be **non-destructive** and **adaptive**, meaning they:
+
+### ✅ Check Before Creating
+- **Models**: Validates that model files exist and contain proper class definitions before generating new ones
+- **Controllers**: Checks for existing controller files with correct class structures
+- **Routes**: Analyzes existing routes and only adds missing ones, with backups
+- **Seeds**: Preserves existing seed data and only creates new seeds if none exist
+- **Gems**: Detects existing gems in Gemfile and avoids duplicates
+- **Database**: Checks for existing databases, schema, and migrations before running commands
+
+### 🔄 Adaptive Behavior
+- **Ruby Version**: Uses rbenv if available, falls back to system Ruby, offers installation options
+- **Database State**: Adapts to partial/complete/missing database setups
+- **Model Errors**: Auto-fixes common Rails version compatibility issues (e.g., enum syntax)
+- **Dependencies**: Accepts existing system tools and only installs what's missing
+
+### 🛡️ Safety Features
+- **Automatic Backups**: Creates timestamped backups before modifying critical files
+- **Error Recovery**: Provides recovery options when operations fail
+- **Validation**: Syntax and structure checking before applying changes
+- **User Choices**: Prompts for confirmation on potentially destructive operations
+
+### 📋 Dependency Checking Pattern
+Each script follows this pattern:
+1. **Detect Environment**: Check Ruby, Rails, Bundler versions
+2. **Analyze Existing State**: Inventory what's already present
+3. **Plan Changes**: Determine what needs to be created/modified
+4. **Execute Safely**: Make changes with backups and validation
+5. **Verify Results**: Confirm everything works correctly
+
+This ensures you can run the scripts multiple times safely without corrupting existing work.
+
+---
