@@ -10,7 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_06_193604) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_07_002701) do
+  create_table "credit_applications", force: :cascade do |t|
+    t.string "email"
+    t.string "re_enter_email"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
+    t.decimal "gross_income"
+    t.string "ssn_last_four"
+    t.boolean "apply_for_credit"
+    t.boolean "qualified"
+    t.decimal "credit_limit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "order_items", force: :cascade do |t|
     t.integer "order_id", null: false
     t.integer "product_id", null: false

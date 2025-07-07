@@ -19,6 +19,10 @@ Rails.application.routes.draw do
     end
   end
 
+  # Route for applying for credit
+  get "apply_for_credit", to: "credit#new"
+  post "apply_for_credit", to: "credit#create"
+
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check

@@ -2,10 +2,4 @@
 import "@hotwired/turbo-rails"
 import "controllers"
 
-// Import original Titans Coffee Run JavaScript
-import "./cart.js"
-import "./checkout.js" 
-import "./login.js"
-import "./rotator.js"
-import "./sales-graph.js"
-import "./style.js"
+// Original Titans Coffee Run JavaScript now loaded via app/assets/javascripts/application.js

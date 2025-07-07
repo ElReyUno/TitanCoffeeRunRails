@@ -1,0 +1,14 @@
+<h2>New Credit Application Received</h2>
+
+<p>A new credit application has been submitted with the following details:</p>
+
+<table>
+  <tr><td><strong>Name:</strong></td><td><%= @credit_application.first_name %> <%= @credit_application.last_name %></td></tr>
+  <tr><td><strong>Email:</strong></td><td><%= @credit_application.email %></td></tr>
+  <tr><td><strong>Location:</strong></td><td><%= @credit_application.city %>, <%= @credit_application.state %> <%= @credit_application.zip %></td></tr>
+  <tr><td><strong>Gross Income:</strong></td><td>$<%= number_with_delimiter(@credit_application.gross_income) %></td></tr>
+  <tr><td><strong>SSN (Last 4):</strong></td><td>****<%= @credit_application.ssn_last_four %></td></tr>
+  <tr><td><strong>Applied:</strong></td><td><%= @credit_application.created_at.strftime("%B %d, %Y at %I:%M %p") %></td></tr>
+</table>
+
+<p>Please review this application in the admin panel.</p>

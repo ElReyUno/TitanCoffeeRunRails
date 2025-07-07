@@ -1,0 +1,59 @@
+<% content_for :title, "Titan Coffee Run - Apply For Credit" %>
+<% content_for :page_header, "Titan Coffee Run - Apply For Credit" %>
+
+<%= form_with model: @credit_application, url: apply_for_credit_path, method: :post, local: true, html: { class: "form-container", id: "creditForm" } do |form| %>
+    <%= form.label :email, "Email Address:", for: "myEmail" %>
+    <%= form.email_field :email, id: "myEmail", required: true %>
+
+    <%= form.label :re_enter_email, "Re-Enter Email Address:", for: "myReEmail" %>
+    <%= form.email_field :re_enter_email, id: "myReEmail", required: true %>
+
+    <%= form.label :first_name, "First Name:", for: "myFirstName" %>
+    <%= form.text_field :first_name, id: "myFirstName", required: true %>
+
+    <%= form.label :last_name, "Last Name:", for: "myLastName" %>
+    <%= form.text_field :last_name, id: "myLastName", required: true %>
+
+    <%= form.label :city, "City:", for: "myCity" %>
+    <%= form.text_field :city, id: "myCity", required: true %>
+
+    <%= form.label :state, "State:", for: "myState" %>
+    <%= form.text_field :state, id: "myState", required: true %>
+
+    <%= form.label :zip, "ZIP Code:", for: "myZip" %>
+    <%= form.text_field :zip, id: "myZip", required: true %>
+
+    <%= form.label :gross_income, "Gross Income:", for: "myGross" %>
+    <%= form.text_field :gross_income, id: "myGross", required: true %>
+
+    <%= form.label :ssn_last_four, "Last 4 digits of SSN:", for: "mySsn" %>
+    <%= form.text_field :ssn_last_four, id: "mySsn", required: true %>
+
+    <div class="checkbox-container">
+      <label for="applyForCredit">
+        <%= form.check_box :apply_for_credit, id: "applyForCredit" %>
+        This request serves as my written instruction to Titan Coffee Run to obtain a "soft inquiry" about
+        my credit information, which will not affect my credit score. I agree that Titan Coffee Run may send me an email
+        confirming my request.
+      </label>
+      <div class="button-container">
+      <%= form.submit "Apply", id: "myApply", class: "submit-button" %>
+      <button type="reset" id="resetButton" aria-label="resetButton">Reset</button>
+    </div>
+    </div>
+
+    
+  <% end %>
+
+  <div id="resultsContainer">
+    <table id="resultsTable">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>

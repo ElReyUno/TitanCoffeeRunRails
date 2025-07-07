@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Titan Coffee Run</title>
+    <title><%= content_for?(:title) ? yield(:title) : "Titan Coffee Run" %></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Order delicious coffee online for delivery at St. Petersburg College. We serve students, faculty, and staff.">
@@ -11,22 +11,26 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Lobster+Two&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
     <header>
       <%= link_to root_path do %><% end %>
-      <button id="toggleMenu" onclick="toggleMenu()">≡</button>  <!-- Hamburger button -->
+      <button id="toggleMenu">≡</button>  <!-- Hamburger button outside nav like original -->
       <nav>
         <ul id="navMenu">
           <li><%= link_to "Home", root_path %></li>
-          <li><%= link_to "Apply for Credit", "#" %></li>
+          <li><%= link_to "Apply for Credit", apply_for_credit_path %></li>
           <li><%= link_to "Create New Account", new_user_registration_path %></li>
           <li><%= link_to "Login", new_user_session_path %></li>
         </ul>
       </nav>
-      <h1>Titan Coffee Run</h1>
+      <h1>
+        <%= content_for?(:page_header) ? yield(:page_header) : "Titan Coffee Run" %>
+        <%= image_tag "logo.png", alt: "Titan Coffee Run Logo", class: "header-logo" %>
+      </h1>
     </header>
 
     <main>

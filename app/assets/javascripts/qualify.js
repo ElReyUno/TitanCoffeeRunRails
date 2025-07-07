@@ -15,6 +15,7 @@ const resetButton = document.getElementById('resetButton');
 const resultsTable = document.getElementById('resultsTable');
 const applyForCreditCheckbox = document.getElementById('applyForCredit');
 const resultsContainer = document.getElementById('resultsContainer');
+const creditForm = document.getElementById('creditForm');
 
 function displayError(inputField, message) {
   const errorElement = document.createElement('span');
@@ -112,23 +113,31 @@ function validateForm() {
   resultsTable.style.display = 'table';
   resultsContainer.style.display = 'block'; 
 
-  if (isValid) {
-    setTimeout(() => {
-      if (formData.grossIncome >= 20000) {
-        alert("Congratulations, You are qualified for credit line. A credit card will be sent to you in the mail");
-      } else {
-        alert("We're sorry, you do not qualify for a credit line at this time");
-      }
-    }, 500);
-  }
-
   return isValid;
 }
 
 applyButton.addEventListener('click', (event) => {
   event.preventDefault();
-  validateForm();
+  const isValid = validateForm();
+  
+  // If validation passes, submit the form to Rails
+  if (isValid) {
+    creditForm.submit();
+  }
 });
+
+// Also handle form submission directly to ensure validation
+if (creditForm) {
+  creditForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const isValid = validateForm();
+    
+    if (isValid) {
+      // Allow the form to submit normally
+      event.target.submit();
+    }
+  });
+}
 
 resetButton.addEventListener('click', () => {
   emailInput.value = '';

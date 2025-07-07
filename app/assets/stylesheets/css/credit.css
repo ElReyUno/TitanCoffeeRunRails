@@ -52,15 +52,24 @@ head {
  form input[type="text"], 
  form input[type="email"],
  form input[type="number"],
- form input[type="submit"] { 
+ form input[type="submit"],
+ form button { 
    padding: 8px;
    margin-bottom: 10px;
    border: 1px solid #ccc;
    box-sizing: border-box;
  }
  
- form input[type="submit"] {
+ form input[type="submit"],
+ form button[type="submit"] {
    background-color: #A52A2A;
+   color: white;
+   border: none;
+   cursor: pointer;
+ }
+ 
+ form button[type="reset"] {
+   background-color: #6c757d;
    color: white;
    border: none;
    cursor: pointer;
@@ -99,3 +108,11 @@ head {
  .hidden {
    display: none;
  }
+ 
+ .button-container {
+  grid-column: 1 / -1; /* Span all columns */
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}

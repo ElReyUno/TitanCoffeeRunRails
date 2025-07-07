@@ -12,6 +12,7 @@ nav {
   display: flex;
   justify-content: center;
   padding-bottom: 0.5em; /* Reduced padding-bottom */
+  margin-bottom: 5em; /* Add spacing between nav and h1 */
 }
 
 nav ul {
@@ -35,15 +36,18 @@ nav a {
 
 #toggleMenu {
   display: none; /* Hide by default */
-  font-size: 2em;
+  font-size: 4em; /* Made bigger */
   background: none;
   border: none;
   cursor: pointer;
   color: #333;
   position: absolute;
   top: 0.5em;
-  right: 1em;
+  right: 0em;
   z-index: 10000; /* Ensure it is above other elements */
+  padding: 10px; /* Add padding for better touch target */
+  min-width: 44px; /* Accessibility: minimum touch target size */
+  min-height: 44px; /* Accessibility: minimum touch target size */
 }
 
 /* Style for the body */
@@ -60,6 +64,20 @@ body {
 h1, h2, h3, h4, h5, h6 {
     color: #333;
     margin: 20px 0;
+}
+
+/* Style for header with logo */
+h1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-logo {
+    height: 4em; /* Scale with font size - made large */
+    width: auto;
+    max-height: 80px; /* Cap maximum size - increased */
+    object-fit: contain;
 }
 
 /* Style for paragraphs */
@@ -217,7 +235,6 @@ nav, main, footer {
 .responsive-container {
   overflow-x: auto;
 }
-
 @keyframes rotate {
   0% {
     opacity: 0;
@@ -350,21 +367,16 @@ nav, main, footer {
 
 /* Styles for small screens (phones) */
 @media (max-width: 767px) {
-  #toggleMenu {
-         display: block;
-  }
-
-  nav ul {
-         display: none;
-         flex-direction: column;
-  }
-
-  nav ul.open {
-         display: flex;
+  header {
+    margin-top: 20px; /* Add cushion between nav and header */
   }
 
   nav {
-         text-align: center;
+    text-align: center;
+  }
+
+  #toggleMenu {
+         display: block;
   }
 
   nav ul {

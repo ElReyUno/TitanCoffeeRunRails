@@ -1,0 +1,25 @@
+<% if @qualification_result[:qualified] %>
+<h2>Congratulations! Your Credit Application Has Been Approved</h2>
+
+<p>Dear <%= @credit_application.first_name %>,</p>
+
+<p>We're pleased to inform you that your credit application has been approved!</p>
+
+<p><strong>Your approved credit limit is: $<%= number_with_delimiter(@qualification_result[:credit_limit]) %></strong></p>
+
+<p>A credit card will be sent to you in the mail within 7-10 business days.</p>
+
+<% else %>
+<h2>Credit Application Update</h2>
+
+<p>Dear <%= @credit_application.first_name %>,</p>
+
+<p>Thank you for your interest in our credit program. Unfortunately, we're unable to approve your application at this time based on the information provided.</p>
+
+<p>You may reapply in 6 months or contact us if your financial situation changes.</p>
+<% end %>
+
+<p>Thank you for choosing Titans Coffee Run!</p>
+
+<p>Best regards,<br>
+The Titans Coffee Run Team</p>
