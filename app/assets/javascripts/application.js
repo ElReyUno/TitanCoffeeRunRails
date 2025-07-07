@@ -1,5 +1,3 @@
-//= require_tree .
-//= require_self
-
-// Original Titans Coffee Run JavaScript files are now loaded via require_tree
-// toggleMenu function from style.js will be globally available
+// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
+import "@hotwired/turbo-rails"
+import "controllers"

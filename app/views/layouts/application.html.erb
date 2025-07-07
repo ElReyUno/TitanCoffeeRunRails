@@ -11,16 +11,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Lobster+Two&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <header>
-      <%= link_to root_path do %><% end %>
-      <button id="toggleMenu">≡</button>  <!-- Hamburger button outside nav like original -->
+    <header data-controller="toggle">
+  <button data-toggle-target="button" data-action="click->toggle#toggle" id="toggleMenu">≡</button>
       <nav>
-        <ul id="navMenu">
+        <ul data-toggle-target="menu" id="navMenu">
           <li><%= link_to "Home", root_path %></li>
           <li><%= link_to "Apply for Credit", apply_for_credit_path %></li>
           <li><%= link_to "Create New Account", new_user_registration_path %></li>
