@@ -484,14 +484,17 @@ footer {
     }
 
     .form-container {
-      grid-template-columns: 1fr;
+      grid-template-columns: 30% 65% 5% !important;
+      gap: 15px !important;
+      /* Increased gap for more cushion */
+      max-width: 95% !important;
     }
   }
 
   /* Extra small screens - more cushion between form columns */
   @media (max-width: 400px) {
     .form-container {
-      grid-template-columns: 25% 65% 10% !important;
+      grid-template-columns: 30% 65% 5% !important;
       gap: 15px !important;
       /* Increased gap for more cushion */
       max-width: 95% !important;
