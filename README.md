@@ -1,6 +1,6 @@
 # TitanCoffeeRunRails
 
-[![Ruby](https://img.shields.io/badge/Ruby-3.3.6-red?logo=ruby)](https://www.ruby-lang.org/) [![Rails](https://img.shields.io/badge/Rails-8.0.0-red?logo=rubyonrails)](https://rubyonrails.org/) [![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker)](https://www.docker.com/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Ruby](https://img.shields.io/badge/Ruby-3.3.6-red?logo=ruby)](https://www.ruby-lang.org/) [![Rails](https://img.shields.io/badge/Rails-8.0.0-red?logo=rubyonrails)](https://rubyonrails.org/) [![SQLite](https://img.shields.io/badge/SQLite-3.0-blue?logo=sqlite)](https://www.sqlite.org/) [![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker)](https://www.docker.com/) [![Kamal](https://img.shields.io/badge/Kamal-deploy-green?logo=ruby)](https://kamal-deploy.org/) [![PWA](https://img.shields.io/badge/PWA-ready-purple?logo=pwa)](https://web.dev/progressive-web-apps/) [![Hotwire](https://img.shields.io/badge/Hotwire-Turbo%20%2B%20Stimulus-orange?logo=hotwire)](https://hotwired.dev/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## Table of Contents
 - [Overview](#titancoffeerunrails)
@@ -10,6 +10,7 @@
 - [Setup Instructions](#setup-instructions)
 - [Development Tools](#development-tools)
 - [Deployment](#deployment)
+- [Directory Structure](#directory-structure)
 - [Architecture Notes](#architecture-notes)
 - [Key Files](#key-files)
 - [License](#license)
@@ -133,11 +134,143 @@ bin/kamal logs     # View logs
 - Uses SQLite with persistent Docker volumes
 - SSL termination via proxy with Let's Encrypt
 
+## Directory Structure
+
+```
+TitanCoffeeRunRails/
+├── README.md
+├── Gemfile
+├── Gemfile.lock
+├── Rakefile
+├── config.ru
+├── LICENSE
+├── .ruby-version
+├── .gitignore
+├── .rubocop.yml
+├── app/
+│   ├── assets/
+│   │   ├── images/
+│   │   ├── stylesheets/
+│   │   │   ├── application.css
+│   │   │   └── css/
+│   │   │       └── styles.css
+│   │   └── javascripts/
+│   │       ├── application.js
+│   │       ├── cart.js
+│   │       ├── checkout.js
+│   │       ├── login.js
+│   │       ├── qualify.js
+│   │       ├── rotator.js
+│   │       ├── sales-graph.js
+│   │       └── style.js
+│   ├── controllers/
+│   │   ├── application_controller.rb
+│   │   └── concerns/
+│   ├── helpers/
+│   │   └── application_helper.rb
+│   ├── javascript/
+│   │   ├── application.js
+│   │   └── controllers/
+│   │       ├── application.js
+│   │       ├── hello_controller.js
+│   │       └── index.js
+│   ├── jobs/
+│   │   └── application_job.rb
+│   ├── mailers/
+│   │   └── application_mailer.rb
+│   ├── models/
+│   │   ├── application_record.rb
+│   │   └── concerns/
+│   └── views/
+│       ├── layouts/
+│       │   ├── application.html.erb
+│       │   ├── mailer.html.erb
+│       │   └── mailer.text.erb
+│       └── pwa/
+│           ├── manifest.json.erb
+│           └── service-worker.js
+├── bin/
+│   ├── brakeman
+│   ├── bundle
+│   ├── dev
+│   ├── docker-entrypoint
+│   ├── importmap
+│   ├── jobs
+│   ├── kamal
+│   ├── rails
+│   ├── rake
+│   ├── rubocop
+│   ├── setup
+│   └── thrust
+├── config/
+│   ├── application.rb
+│   ├── boot.rb
+│   ├── cable.yml
+│   ├── cache.yml
+│   ├── database.yml
+│   ├── deploy.yml
+│   ├── environment.rb
+│   ├── importmap.rb
+│   ├── puma.rb
+│   ├── queue.yml
+│   ├── recurring.yml
+│   ├── routes.rb
+│   ├── storage.yml
+│   ├── environments/
+│   │   ├── development.rb
+│   │   ├── production.rb
+│   │   └── test.rb
+│   ├── initializers/
+│   │   ├── assets.rb
+│   │   ├── content_security_policy.rb
+│   │   ├── filter_parameter_logging.rb
+│   │   └── inflections.rb
+│   └── locales/
+│       └── en.yml
+├── db/
+│   ├── cable_schema.rb
+│   ├── cache_schema.rb
+│   ├── queue_schema.rb
+│   ├── seeds.rb
+│   └── migrate/
+│       └── 20250707002701_create_credit_applications.rb
+├── lib/
+│   └── tasks/
+├── log/
+├── public/
+│   ├── 400.html
+│   ├── 404.html
+│   ├── 406-unsupported-browser.html
+│   ├── 422.html
+│   ├── 500.html
+│   ├── icon.png
+│   ├── icon.svg
+│   └── robots.txt
+├── script/
+├── storage/
+├── test/
+│   ├── application_system_test_case.rb
+│   ├── test_helper.rb
+│   ├── controllers/
+│   ├── fixtures/
+│   │   └── files/
+│   ├── helpers/
+│   ├── integration/
+│   ├── mailers/
+│   ├── models/
+│   └── system/
+├── tmp/
+│   ├── pids/
+│   └── storage/
+└── vendor/
+    └── javascript/
+```
+
 ## Architecture Notes
 
 - **PWA:** Manifest and service worker in `app/views/pwa/`
-- **Assets:** Managed by Propshaft (modern Rails asset pipeline)
-- **JavaScript:** Import maps eliminate need for Node.js/bundling
+- **Assets:** Original JS/CSS migrated to `app/assets/javascripts/` and `app/assets/stylesheets/css/`
+- **JavaScript:** Dual approach - traditional asset pipeline for migrated code + import maps for modern Rails features
 - **Multi-DB:** Separate SQLite databases for different concerns
 - **Solid Stack:** Uses Rails 8's new Solid gems for queue, cache, and cable
 - **Docker:** Containerized with Kamal for simple deployment

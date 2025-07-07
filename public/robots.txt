@@ -1,1 +1,47 @@
+# robots.txt for TitanCoffeeRunRails
+# Coffee run management application
 # See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+
+User-agent: *
+
+# Allow public pages
+Allow: /
+Allow: /about
+Allow: /contact
+
+# Block admin and user-specific areas
+Disallow: /admin/
+Disallow: /users/
+Disallow: /orders/
+Disallow: /cart/
+Disallow: /checkout/
+
+# Block authentication and private areas
+Disallow: /login
+Disallow: /signup
+Disallow: /sign_in
+Disallow: /sign_up
+Disallow: /password/
+Disallow: /profile/
+Disallow: /account/
+
+# Block API endpoints
+Disallow: /api/
+Disallow: /rails/
+
+# Block development and system files
+Disallow: /assets/
+Disallow: /system/
+Disallow: /uploads/
+
+# Block credit application (contains sensitive data)
+Disallow: /credit/
+Disallow: /apply/
+
+# Allow manifest and service worker for PWA
+Allow: /manifest.json
+Allow: /service-worker.js
+Allow: /pwa/
+
+# Sitemap location (if you add one later)
+# Sitemap: https://yourdomain.com/sitemap.xml
