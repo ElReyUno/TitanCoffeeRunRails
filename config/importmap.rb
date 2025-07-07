@@ -9,3 +9,6 @@ pin "chart.js", to: "https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.
 
 pin_all_from "app/javascript/controllers", under: "controllers"
 pin_all_from "app/javascript/titans", under: "titans"
+
+# Original Titans Coffee Run JavaScript
+pin_all_from "app/javascript", under: "titans", to: "titans"

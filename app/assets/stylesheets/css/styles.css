@@ -1,0 +1,498 @@
+/* Style for nav */
+nav {
+  padding: 1em;
+  background-color: inherit;
+  padding-top: 0.25em; /* Reduced padding-top */
+  position: flex;
+  top: 0;
+  left: 0;
+  background-color: #FFF;
+  padding-right: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 0.5em; /* Reduced padding-bottom */
+}
+
+nav ul {
+  list-style: none;
+  flex-wrap: wrap;
+  font-size: 1.2em;
+  justify-content: space-between;
+
+}
+
+nav ul.open {
+  display: flex;
+  flex-direction: column;
+}
+
+nav a {
+  text-decoration: none;
+  display: block;
+  font-weight: bold;
+}
+
+#toggleMenu {
+  display: none; /* Hide by default */
+  font-size: 2em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  position: absolute;
+  top: 0.5em;
+  right: 1em;
+  z-index: 10000; /* Ensure it is above other elements */
+}
+
+/* Style for the body */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0; /* Remove default body margins */
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    min-height: 100vh; /* Ensure the container fills the viewport height */
+    background-color: #f4f4f4;
+}
+
+/* Style for headers */
+h1, h2, h3, h4, h5, h6 {
+    color: #333;
+    margin: 20px 0;
+}
+
+/* Style for paragraphs */
+p {
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+/* Style for links */
+a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Style for main */
+.main-container {
+  padding: 20px;
+  padding-top: 80px; /* Adjust padding to prevent overlap with nav */
+  background-color: #fff;
+  margin-bottom: 60px;
+}
+
+main {
+       padding-bottom: 15px; /* Add bottom padding */
+}
+
+/* Style for a container class */
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Adjust the gap between images as needed */
+}
+
+.image-container img {
+    width: 200px; /* Set the desired width */
+    height: 200px; /* Set the desired height */
+    object-fit: cover; /* Ensure the image covers the container without distortion */
+}
+
+.image-rotator {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding-bottom: 56.25%;
+}
+
+.image-rotator img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  animation: rotate 16s infinite;
+}
+
+.image-rotator img:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.image-rotator img:nth-child(2) {
+  animation-delay: 4s;
+}
+
+.image-rotator img:nth-child(3) {
+  animation-delay: 8s;
+}
+
+.image-rotator img:nth-child(4) {
+  animation-delay: 12s;
+}
+
+/* Container for the image banner */
+.banner-container {
+  position: relative;
+  width: 100%;   /* vw 100% of the viewport width */
+  height: 300px; /* Set a fixed height for the banner */ /* vh Maintains aspect ratio */
+  overflow: hidden;
+}
+
+.banner-container img {
+  width: 100%;      /* Scales image to fit the container width */
+  height: 100%;     /* Maintains aspect ratio */
+  object-fit: contain; /* Ensure the images cover the container without stretching */
+  overflow-clip-margin: content-box;
+  overflow:  clip;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.footer, .footer-container {
+  box-sizing: border-box;
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 1em; /* Match nav padding */
+  padding-top: 0.25em; /* Match nav reduced padding-top */
+  padding-bottom: 0.5em; /* Match nav reduced padding-bottom */
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: auto;
+  font-size: 1.2em; /* Match nav font-size */
+  z-index: 9999; /* Match nav z-index for consistency */
+}
+
+.footer p, .footer-container p {
+  margin: 10px 0; /* Match the general paragraph margins */
+}
+
+.footer a, .footer-container a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.footer a:hover, .footer-container a:hover {
+  color: #ccc;
+}
+
+ /* Allow elements to grow and shrink */
+nav, main, footer {
+  flex: 1 0 auto;
+}
+
+#ad-container {
+   height:250px;
+   width:300px;
+}
+
+#ad-container img {
+   border:0;
+}
+
+.form-container {
+  display: grid;
+  grid-template-columns: 30% 50% 20%;
+  gap: 10px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.responsive-container {
+  overflow-x: auto;
+}
+
+@keyframes rotate {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.button-container {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Styles for large screens (TVs, desktops) */
+@media (min-width: 1024px) {
+  nav {
+         width: 100%;
+  }
+
+  nav ul {
+         display: flex;
+         width: 100%;
+  }
+
+  #toggleMenu {
+         display: none;
+  }
+
+  #toggle-blog-buttons {
+         display: none;
+  }
+
+  .main-content {
+         width: 100%;
+  }
+
+  .home {
+         height: 50vh;
+         padding-top: 5em;
+         padding-left: 8em;
+  }
+
+  .content {
+         height: 30vh;
+         padding-top: 1em;
+         padding-left: 8em;
+  }
+}
+
+/* Styles for medium screens (laptops, tablets) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  nav {
+         width: 100%;
+  }
+
+  nav ul {
+         display: flex;
+         width: 100%;
+  }
+
+  #toggleMenu {
+         display: none;
+  }
+
+  #blog-buttons {
+         display: none;
+  }
+
+  #blog-buttons.show {
+         display: flex;
+  }
+
+  #toggle-blog-buttons {
+         width: 100%;
+         padding: 10px;
+         text-align: center;
+         background-color: #ff5722;
+         color: white;
+         border: none;
+         border-radius: 5px;
+         cursor: pointer;
+         margin-left: 10px;
+  }
+
+  .main-content {
+         width: 100%;
+  }
+
+  .sidebar {
+         width: 100%;
+         margin-top: 20px;
+  }
+
+  h1 {
+         font-size: 32px;
+  }
+
+  h2 {
+         font-size: 28px;
+  }
+
+  h3 {
+         font-size: 20px;
+  }
+
+  h4 {
+         font-size: 17px;
+  }
+
+  body,
+  footer {
+         font-size: 13px;
+  }
+
+  footer, .footer-container {
+         font-size: 13px; /* Match responsive body font-size */
+  }
+}
+
+/* Styles for small screens (phones) */
+@media (max-width: 767px) {
+  #toggleMenu {
+         display: block;
+  }
+
+  nav ul {
+         display: none;
+         flex-direction: column;
+  }
+
+  nav ul.open {
+         display: flex;
+  }
+
+  nav {
+         text-align: center;
+  }
+
+  nav ul {
+         justify-content: space-between;
+         display: none;
+         flex-direction: column;
+  }
+
+  nav ul.open {
+         display: flex;
+  }
+
+  nav li {
+         width: 100%;
+  }
+
+  section {
+         padding-left: 2em;
+         padding-right: 2em;
+  }
+
+  form {
+         display: grid;
+         grid-template-columns: 1fr;
+         grid-gap: 1em;
+         width: 100%;
+  }
+
+  input[type="submit"] {
+         grid-column: 1;
+         width: 100%;
+  }
+
+  label {
+         text-align: left;
+  }
+
+  .menu-section {
+         display: block;
+         justify-content: initial;
+         flex-direction: column;
+  }
+
+  .menu-section>div {
+         flex: initial;
+  }
+
+  .menu-container {
+         padding: 10px;
+  }
+
+  .image-container img {
+         width: 100%;
+         height: auto;
+  }
+
+  .form-container {
+         grid-template-columns: 1fr;
+  }
+}
+
+/* Styles for extra small screens (very small phones) */
+@media (max-width: 480px) {
+       .responsive-container {
+         overflow-x: auto;
+         -webkit-overflow-scrolling: touch; /* Enables smooth scrolling on iOS */
+         padding: 10px; /* Adds some padding for better spacing */
+       }
+     
+       .responsive-container table {
+         width: 100%;
+         display: block;
+       }
+     
+       .responsive-container thead {
+         display: none;
+       }
+     
+       .responsive-container tr {
+         display: block;
+         margin-bottom: 10px;
+       }
+     
+       .responsive-container td {
+         display: block;
+         text-align: right;
+         padding-left: 50%;
+         position: relative;
+       }
+     
+       .responsive-container td::before {
+         content: attr(data-label); /* Adds data-label attribute content before each cell */
+         position: absolute;
+         left: 10px;
+         white-space: nowrap;
+         font-weight: bold;
+       }
+}
+
+@media (max-width: 600px) {
+  .responsive-container table {
+    width: 100%;
+    display: block;
+  }
+
+  .responsive-container thead {
+    display: none;
+  }
+
+  .responsive-container tr {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .responsive-container td {
+    display: block;
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  .responsive-container td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    width: 50%;
+    padding-left: 10px;
+    font-weight: bold;
+    text-align: left;
+  }
+}

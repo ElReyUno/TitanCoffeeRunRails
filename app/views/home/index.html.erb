@@ -1,34 +1,7 @@
-<div class="hero-section">
-  <div class="carousel">
-    <%= image_tag "coffee1.jpg", alt: "Fresh Coffee" %>
-    <%= image_tag "coffee2.jpg", alt: "Coffee Beans" %>
-    <%= image_tag "coffee3.jpg", alt: "Coffee Shop" %>
-  </div>
-  
-  <div class="hero-content">
-    <h1>Welcome to Titans Coffee Run</h1>
-    <p>Your favorite coffee, delivered fresh to your team</p>
-    
-    <% if user_signed_in? %>
-      <%= link_to "Order Now", products_path, class: "btn btn-primary" %>
-    <% else %>
-      <%= link_to "Get Started", new_user_registration_path, class: "btn btn-primary" %>
-      <%= link_to "Login", new_user_session_path, class: "btn btn-secondary" %>
-    <% end %>
-  </div>
-</div>
-
-<div class="features">
-  <div class="feature">
-    <h3>Quality Coffee</h3>
-    <p>Premium coffee beans from the best roasters</p>
-  </div>
-  <div class="feature">
-    <h3>Team Orders</h3>
-    <p>Coordinate group orders for your office</p>
-  </div>
-  <div class="feature">
-    <h3>Fast Delivery</h3>
-    <p>Quick delivery to keep your team energized</p>
-  </div>
+<p>This is an online coffee delivery service for Students, Employees, and Faculty at St. Petersburg College</p>
+<div id="banner" class="image-rotator banner-container">
+  <%= image_tag "coffee1.jpg", alt: "Banner 1" %>
+  <%= image_tag "coffee2.jpg", alt: "Banner 2" %>
+  <%= image_tag "coffee3.jpg", alt: "Banner 3" %>
+  <%= image_tag "coffee4.jpg", alt: "Banner 4" %>
 </div>

@@ -1,10 +1,15 @@
 /*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
+ * Titans Coffee Run - Original Frontend CSS
+ * Import original stylesheets without Rails interference
  */
+
+/* Import Original Frontend CSS Files (as-is) */
+@import url("css/reset.css");
+@import url("css/styles.css");
+@import url("css/forms.css");
+@import url("css/menu.css");
+@import url("css/checkout.css");
+@import url("css/login.css");
+@import url("css/sales.css");
+@import url("css/credit.css");
+@import url("css/apply.css");

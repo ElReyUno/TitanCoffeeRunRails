@@ -1,0 +1,84 @@
+head {
+   font-family: Arial, sans-serif;
+   box-sizing: border-box;
+   text-align: center;
+ }
+ 
+ body {
+   margin: 0;
+   padding: 0;
+   font-size: 16px;
+   box-sizing: border-box;
+ }
+ label {
+   box-sizing: border-box;
+ }
+ 
+ .checkbox-container {
+   box-sizing: border-box;
+   display: grid;
+   grid-template-rows: auto auto;
+   justify-content: space-between;
+   margin-bottom: 10px;
+ }
+ 
+ .form-container {
+   box-sizing: border-box;
+   display: grid;
+   grid-template-columns: 10% 50% 20%;
+   gap: 10px;
+   max-width: 80%;
+   margin: auto;
+ }
+ 
+ .form-container label {
+   grid-column: 1;
+ }
+ 
+ .form-container input {
+   grid-column: 2;
+ }
+ 
+ .form-container .error {
+   grid-column: 3;
+   color: red;
+ }
+ 
+ form label {
+   display: block;
+   margin-bottom: 5px;
+ }
+ 
+ form input[type="text"],
+ form input[type="password"],
+ form input[type="submit"],
+ form input[type="reset"] {
+   padding: 8px;
+   margin-bottom: 10px;
+   border: 1px solid #ccc;
+   box-sizing: border-box;
+ }
+ 
+ form input[type="submit"] {
+   background-color: #A52A2A;
+   color: white;
+   border: none;
+   cursor: pointer;
+ }
+ 
+ .input-container {
+   display: flex;
+   align-items: flex-start;
+   flex-direction: column;
+ } 
+ 
+ .error-message {
+   color: red;
+   font-size: 12px;
+   font-weight: bolder;
+   margin-left: 5px;
+ }
+ 
+.input-error {
+   border-color: red;
+}
