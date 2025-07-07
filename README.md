@@ -283,12 +283,6 @@ TitanCoffeeRunRails/
 - `app/views/pwa/` - Progressive Web App files
 - `.rubocop.yml` - Ruby style configuration
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
 Built with Rails 8 and the modern Hotwire + Solid stack.
 
 ## Project Architecture & Integration
@@ -440,5 +434,9 @@ Each script follows this pattern:
 5. **Verify Results**: Confirm everything works correctly
 
 This ensures you can run the scripts multiple times safely without corrupting existing work.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
