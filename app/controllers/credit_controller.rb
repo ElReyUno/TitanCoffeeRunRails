@@ -16,7 +16,8 @@ class CreditController < ApplicationController
   def create
     @credit_application = CreditApplication.new(credit_application_params)
 
-    if @credit_application.valid?
+    # Check that all required fields are present and checkbox is checked
+    if validate_required_fields && @credit_application.valid?
       # Save to database
       @credit_application.save!
 
@@ -33,14 +34,50 @@ class CreditController < ApplicationController
       CreditApplicationMailer.application_result(@credit_application, qualification_result).deliver_now
 
       flash[:notice] = qualification_result[:message]
-      redirect_to apply_for_credit_path
+      
+      # Redirect to order page regardless of approval status
+      redirect_to orders_path
     else
-      flash[:alert] = "Please correct the errors below."
+      flash[:alert] = "Please correct the errors below and ensure all required fields are completed."
       render :new
     end
   end
 
   private
+
+  def validate_required_fields
+    # Check all required fields are present and not empty
+    required_fields = [
+      :email, :re_enter_email, :first_name, :last_name,
+      :city, :state, :zip, :gross_income, :ssn_last_four
+    ]
+    
+    missing_fields = []
+    
+    required_fields.each do |field|
+      value = @credit_application.send(field)
+      if value.blank?
+        missing_fields << field.to_s.humanize
+      end
+    end
+    
+    # Check if emails match
+    if @credit_application.email != @credit_application.re_enter_email
+      @credit_application.errors.add(:re_enter_email, "must match the email address")
+    end
+    
+    # Check if apply_for_credit checkbox is checked
+    unless @credit_application.apply_for_credit
+      @credit_application.errors.add(:apply_for_credit, "must be checked to proceed")
+    end
+    
+    # Add errors for missing fields
+    missing_fields.each do |field|
+      @credit_application.errors.add(:base, "#{field} is required")
+    end
+    
+    return missing_fields.empty? && @credit_application.email == @credit_application.re_enter_email && @credit_application.apply_for_credit
+  end
 
   def credit_application_params
     params.require(:credit_application).permit(

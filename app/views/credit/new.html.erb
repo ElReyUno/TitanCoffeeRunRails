@@ -1,5 +1,6 @@
 <% content_for :title, "Titan Coffee Run - Apply For Credit" %>
 <% content_for :page_header, "Titan Coffee Run - Apply For Credit" %>
+<%= javascript_import_module_tag "qualify" %>
 
 <%= form_with model: @credit_application, url: apply_for_credit_path, method: :post, local: true, html: { class: "form-container", id: "creditForm" } do |form| %>
     <%= form.label :email, "Email Address:", for: "myEmail" %>
